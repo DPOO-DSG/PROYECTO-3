@@ -931,7 +931,7 @@ public class PFormulario extends JPanel {
             String selInv    = (String) JOptionPane.showInputDialog(this, "¿A qué inventario agregar?",
                     "Inventario", JOptionPane.PLAIN_MESSAGE, null, invs, invs[0]);
             if (selInv == null) return;
-            String tipo = selInv.contains("venta") ? "VENTA" : "PRESTAMO";
+            String tipo = selInv.toLowerCase().contains("stamo") ? "PRESTAMO" : "VENTA";
             msg(controlador.crearJuego(categoria.trim(), nombre.trim(), cantidad, precio,
                     anio, empresa.trim(), minJug, maxJug, restriccion.trim(), dificil, tipo));
         } catch (Exception ex) {

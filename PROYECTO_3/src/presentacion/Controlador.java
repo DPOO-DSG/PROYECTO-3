@@ -478,23 +478,38 @@ public class Controlador {
 	 * Retorna mapa: fecha (dd/MM) -> double[]{ventasCafeteria, ventasJuegos}
 	 */
 	public HashMap<String, double[]> getVentasPorRango(LocalDateTime inicio, LocalDateTime fin) {
-		HashMap<String, double[]> mapa = new HashMap<>();
-		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM");
-		for (CompraVenta cv : cafe.getRegistroVentas().values()) {
-			if (cv.getFecha() == null) continue;
-			LocalDateTime fecha = cv.getFecha();
-			if (fecha.isBefore(inicio) || fecha.isAfter(fin)) continue;
-			String dia = fecha.format(fmt);
-			if (!mapa.containsKey(dia)) mapa.put(dia, new double[]{0, 0});
-			double total = cv.getTotal();
-			// Si tiene reserva asociada: venta de juego; si no: cafetería
-			if (cv.getReserva() != null) {
-				mapa.get(dia)[1] += total;
-			} else {
-				mapa.get(dia)[0] += total;
-			}
-		}
-		return mapa;
+	    HashMap<String, double[]> mapa = new HashMap<>();
+	    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM");
+
+	    for (CompraVenta cv : cafe.getRegistroVentas().values()) {
+	        if (cv.getFecha() == null) continue;
+	        LocalDateTime fecha = cv.getFecha();
+	        if (fecha.isBefore(inicio) || fecha.isAfter(fin)) continue;
+
+	        String dia = fecha.format(fmt);
+	        if (!mapa.containsKey(dia)) mapa.put(dia, new double[]{0, 0});
+
+	        if (cv.getReserva() != null) {
+	            for (Pedido ped : cv.getReserva().getPedidos()) {
+	                // Sumar platillos
+	                if (ped.getPlatillos() != null) {
+	                    for (Platillo p : ped.getPlatillos()) {
+	                        mapa.get(dia)[0] += p.getprecio();
+	                    }
+	                }
+	                // Sumar juegos
+	                if (ped.getJuegos() != null) {
+	                    for (Juego j : ped.getJuegos()) {
+	                        mapa.get(dia)[1] += j.getprecio();
+	                    }
+	                }
+	            }
+	        } else {
+	            // Compra directa de empleado sin reserva → va a cafetería
+	            mapa.get(dia)[0] += cv.getTotal();
+	        }
+	    }
+	    return mapa;
 	}
 
 	/**
