@@ -18,6 +18,8 @@ public class FPrincipal extends JFrame {
     private Controlador controlador;
     private PFormulario pFormulario;
     private PLienzo     pLienzo;
+    private JSplitPane  split;        
+    private JPanel      panelGraficas; 
 
     public FPrincipal(Cafe cafe) {
         super("Dulces & Dados — Sistema de Gestión");
@@ -27,7 +29,7 @@ public class FPrincipal extends JFrame {
 
         // Paneles
         pLienzo    = new PLienzo(controlador);
-        pFormulario = new PFormulario(controlador, pLienzo);
+        pFormulario = new PFormulario(controlador, pLienzo, this);
 
         // Registrar el lienzo como observador
         controlador.agregarObservador(pLienzo);
@@ -38,6 +40,8 @@ public class FPrincipal extends JFrame {
     private void inicializarVentana() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
+        pLienzo.setVisible(false);
+
 
         // Panel izquierdo: formularios (55% del ancho)
         JScrollPane scrollFormulario = new JScrollPane(pFormulario);
@@ -45,18 +49,21 @@ public class FPrincipal extends JFrame {
         scrollFormulario.setPreferredSize(new Dimension(520, 0));
 
         // Panel derecho: gráficas (45% del ancho)
-        JPanel panelGraficas = new JPanel(new BorderLayout());
+        panelGraficas = new JPanel(new BorderLayout());
         panelGraficas.setBorder(BorderFactory.createTitledBorder("Visualizaciones en tiempo real"));
         panelGraficas.setPreferredSize(new Dimension(680, 0));
         panelGraficas.setMinimumSize(new Dimension(400, 200));
         panelGraficas.add(pLienzo, BorderLayout.CENTER);
 
         // Separador
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+        split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 scrollFormulario, panelGraficas);
         split.setDividerLocation(520);
         split.setResizeWeight(0.43);
         split.setOneTouchExpandable(true);
+        panelGraficas.setVisible(false);
+        split.setDividerSize(0);       
+        split.setDividerLocation(1.0);
 
         add(split, BorderLayout.CENTER);
 
@@ -92,6 +99,21 @@ public class FPrincipal extends JFrame {
         setMinimumSize(new Dimension(900, 500));
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+    
+    public void setLienzoVisible(boolean visible) {
+    	pLienzo.setVisible(visible);
+        panelGraficas.setVisible(visible);
+        if (visible) {
+            split.setDividerSize(8);
+            split.setDividerLocation(520);
+            split.setResizeWeight(0.43);
+        } else {
+            split.setDividerSize(0);
+            split.setDividerLocation(1.0);
+        }
+        split.revalidate();
+        split.repaint();
     }
 
     // =========================================================

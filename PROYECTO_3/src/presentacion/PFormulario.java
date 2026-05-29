@@ -25,6 +25,8 @@ public class PFormulario extends JPanel {
     // Panel con CardLayout para mostrar distintas vistas
     private JPanel cardPanel;
     private CardLayout cardLayout;
+    private FPrincipal ventana;
+
 
     // Constantes de tarjetas
     private static final String CARD_INICIO     = "INICIO";
@@ -32,10 +34,12 @@ public class PFormulario extends JPanel {
     private static final String CARD_MENU_CLI   = "MENU_CLIENTE";
     private static final String CARD_MENU_EMP   = "MENU_EMPLEADO";
     private static final String CARD_MENU_ADM   = "MENU_ADMIN";
+    
 
-    public PFormulario(Controlador controlador, PLienzo lienzo) {
+    public PFormulario(Controlador controlador, PLienzo lienzo, FPrincipal ventana) {
         this.controlador = controlador;
         this.lienzo = lienzo;
+        this.ventana = ventana;
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -83,8 +87,7 @@ public class PFormulario extends JPanel {
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
-    private void reemplazarTarjeta(String nombre, JPanel panel) {
-        // Elimina si ya existe y agrega la nueva versión
+    private void reemplazarTarjeta(String nombre, Component panel) {
         cardPanel.add(panel, nombre);
         cardLayout.show(cardPanel, nombre);
     }
@@ -219,6 +222,7 @@ public class PFormulario extends JPanel {
     // MENÚ CLIENTE
     // =========================================================
     private void abrirMenuCliente(Cliente c) {
+    	ventana.setLienzoVisible(false);
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -254,7 +258,7 @@ public class PFormulario extends JPanel {
 
         gbc.gridy++;
         JButton btnSalir = btn("Cerrar sesión");
-        btnSalir.addActionListener(e -> { usuarioActual = null; mostrar(CARD_INICIO); });
+        btnSalir.addActionListener(e -> { usuarioActual = null; ventana.setLienzoVisible(false); mostrar(CARD_INICIO); });
         p.add(btnSalir, gbc);
 
         reemplazarTarjeta(CARD_MENU_CLI, new JScrollPane(p));
@@ -282,6 +286,7 @@ public class PFormulario extends JPanel {
     // MENÚ EMPLEADO
     // =========================================================
     private void abrirMenuEmpleado(Empleado e) {
+    	ventana.setLienzoVisible(false);
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -317,7 +322,7 @@ public class PFormulario extends JPanel {
 
         gbc.gridy++;
         JButton btnSalir = btn("Cerrar sesión");
-        btnSalir.addActionListener(ev -> { usuarioActual = null; mostrar(CARD_INICIO); });
+        btnSalir.addActionListener(ev -> { usuarioActual = null;ventana.setLienzoVisible(false); mostrar(CARD_INICIO); });
         p.add(btnSalir, gbc);
 
         reemplazarTarjeta(CARD_MENU_EMP, new JScrollPane(p));
@@ -345,6 +350,7 @@ public class PFormulario extends JPanel {
     // MENÚ ADMINISTRADOR
     // =========================================================
     private void abrirMenuAdmin(Administrador a) {
+    	ventana.setLienzoVisible(true);
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -385,7 +391,7 @@ public class PFormulario extends JPanel {
 
         gbc.gridy++;
         JButton btnSalir = btn("Cerrar sesión");
-        btnSalir.addActionListener(ev -> { usuarioActual = null; mostrar(CARD_INICIO); });
+        btnSalir.addActionListener(ev -> { usuarioActual = null; ventana.setLienzoVisible(false); mostrar(CARD_INICIO); });
         p.add(btnSalir, gbc);
 
         reemplazarTarjeta(CARD_MENU_ADM, new JScrollPane(p));

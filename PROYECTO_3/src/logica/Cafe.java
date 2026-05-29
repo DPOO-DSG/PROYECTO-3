@@ -1131,6 +1131,15 @@ public class Cafe implements Serializable {
 	    torneo.eliminarInscripcion(u);
 		
 	}
+	
+	public HashMap<Integer, Platillo> getSolicitudesAnadirPlatillo() {
+	    return solicitudesAnadirPlatillo;
+	}
+	
+	public HashMap<String, Reserva> getReservas() {
+	    return reservas;
+	}
+
 
 	
 
