@@ -8,11 +8,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-/**
- * FPrincipal: ventana principal de la aplicación. Extiende JFrame.
- * Contiene composición con PFormulario (panel izquierdo) y PLienzo (panel derecho, gráficas).
- * Conecta ambos a través del Controlador.
- */
+
 public class FPrincipal extends JFrame {
 
     private Controlador controlador;
@@ -22,7 +18,7 @@ public class FPrincipal extends JFrame {
     private JPanel      panelGraficas; 
 
     public FPrincipal(Cafe cafe) {
-        super("Dulces & Dados — Sistema de Gestión");
+        super("Board Game Cafe");
 
         // Controlador MVC
         controlador = new Controlador(cafe);
@@ -48,7 +44,7 @@ public class FPrincipal extends JFrame {
         scrollFormulario.setBorder(BorderFactory.createTitledBorder("Gestión"));
         scrollFormulario.setPreferredSize(new Dimension(520, 0));
 
-        // Panel derecho: gráficas (45% del ancho)
+        // Panel derecho: gráficas (45% del ancoh)
         panelGraficas = new JPanel(new BorderLayout());
         panelGraficas.setBorder(BorderFactory.createTitledBorder("Visualizaciones en tiempo real"));
         panelGraficas.setPreferredSize(new Dimension(680, 0));
@@ -68,7 +64,7 @@ public class FPrincipal extends JFrame {
         add(split, BorderLayout.CENTER);
 
         // Barra de estado inferior
-        JLabel statusBar = new JLabel("  Dulces & Dados — Lista para usar");
+        JLabel statusBar = new JLabel("  Board Game Cafe");
         statusBar.setBorder(BorderFactory.createEtchedBorder());
         statusBar.setFont(new Font("SansSerif", Font.PLAIN, 11));
         add(statusBar, BorderLayout.SOUTH);
@@ -90,7 +86,6 @@ public class FPrincipal extends JFrame {
                     dispose();
                     System.exit(0);
                 }
-                // CANCEL: no hace nada, la ventana queda abierta
             }
         });
 
@@ -116,11 +111,8 @@ public class FPrincipal extends JFrame {
         split.repaint();
     }
 
-    // =========================================================
     // MAIN
-    // =========================================================
     public static void main(String[] args) {
-        // Look and feel nativo del sistema operativo
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}

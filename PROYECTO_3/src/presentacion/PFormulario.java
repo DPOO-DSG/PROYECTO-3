@@ -10,16 +10,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * PFormulario: panel izquierdo (JPanel) que contiene todos los formularios y menús.
- * Delega TODA la lógica al Controlador. No llama directamente a Cafe.
- */
+
 public class PFormulario extends JPanel {
 
     private Controlador controlador;
     private PLienzo lienzo;
 
-    // Usuario autenticado en la sesión actual
     private Object usuarioActual = null;
 
     // Panel con CardLayout para mostrar distintas vistas
@@ -54,9 +50,7 @@ public class PFormulario extends JPanel {
         cardLayout.show(cardPanel, CARD_INICIO);
     }
 
-    // =========================================================
     // HELPERS DE UI
-    // =========================================================
     private JButton btn(String texto) {
         JButton b = new JButton(texto);
         b.setFocusPainted(false);
@@ -92,9 +86,7 @@ public class PFormulario extends JPanel {
         cardLayout.show(cardPanel, nombre);
     }
 
-    // =========================================================
     // PANEL INICIO
-    // =========================================================
     private JPanel crearPanelInicio() {
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(Color.WHITE);
@@ -103,7 +95,7 @@ public class PFormulario extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0; gbc.gridy = 0;
 
-        p.add(titulo("=== SISTEMA DULCES & DADOS ==="), gbc);
+        p.add(titulo("Board Game Cafe"), gbc);
 
         String[] opciones = {
             "Ingresar como Cliente",
@@ -140,9 +132,7 @@ public class PFormulario extends JPanel {
         }
     }
 
-    // =========================================================
     // LOGIN
-    // =========================================================
     private String tipoLoginActual;
 
     private JPanel crearPanelLogin() {
@@ -206,9 +196,7 @@ public class PFormulario extends JPanel {
         mostrar(CARD_LOGIN);
     }
 
-    // =========================================================
     // REGISTRO CLIENTE
-    // =========================================================
     private void registrarCliente() {
         String login = input("Login:");
         if (login == null || login.trim().isEmpty()) return;
@@ -218,9 +206,7 @@ public class PFormulario extends JPanel {
         msg(ok ? "Cliente creado correctamente" : "El login ya existe");
     }
 
-    // =========================================================
-    // MENÚ CLIENTE
-    // =========================================================
+    // MENI CLIENTE
     private void abrirMenuCliente(Cliente c) {
     	ventana.setLienzoVisible(false);
         JPanel p = new JPanel(new GridBagLayout());
@@ -230,7 +216,7 @@ public class PFormulario extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0; gbc.gridy = 0;
 
-        p.add(titulo("=== MENÚ CLIENTE: " + c.getLogin() + " ==="), gbc);
+        p.add(titulo("=== MENU CLIENTE: " + c.getLogin() + " ==="), gbc);
 
         String[][] items = {
             {"Reservar mesa",                "reservarMesa"},
@@ -282,9 +268,7 @@ public class PFormulario extends JPanel {
         }
     }
 
-    // =========================================================
     // MENÚ EMPLEADO
-    // =========================================================
     private void abrirMenuEmpleado(Empleado e) {
     	ventana.setLienzoVisible(false);
         JPanel p = new JPanel(new GridBagLayout());
@@ -294,7 +278,7 @@ public class PFormulario extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0; gbc.gridy = 0;
 
-        p.add(titulo("=== MENÚ EMPLEADO: " + e.getLogin() + " ==="), gbc);
+        p.add(titulo("=== MENU EMPLEADO: " + e.getLogin() + " ==="), gbc);
 
         String[][] items = {
             {"Consultar mis turnos",         "consultarTurnos"},
@@ -346,9 +330,7 @@ public class PFormulario extends JPanel {
         }
     }
 
-    // =========================================================
-    // MENÚ ADMINISTRADOR
-    // =========================================================
+    // MENU ADMINISTRADOR
     private void abrirMenuAdmin(Administrador a) {
     	ventana.setLienzoVisible(true);
         JPanel p = new JPanel(new GridBagLayout());
@@ -358,7 +340,7 @@ public class PFormulario extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0; gbc.gridy = 0;
 
-        p.add(titulo("=== MENÚ ADMINISTRADOR ==="), gbc);
+        p.add(titulo("=== MENU ADMINISTRADOR ==="), gbc);
 
         String[][] items = {
             {"Crear mesero",                          "crearMesero"},
@@ -420,11 +402,9 @@ public class PFormulario extends JPanel {
         }
     }
 
-    // =========================================================
-    // ACCIONES COMPARTIDAS CLIENTE / EMPLEADO
-    // =========================================================
+    // ACCIONES COMPARTIDAS CLIENTE-EMPLEADO
 
-    // --- Reservar mesa (solo cliente) ---
+    // Reservar mesa (solo cliente)
     private void reservarMesa(Cliente c) {
         try {
             String sPersonas = input("Cantidad de personas:");
@@ -445,7 +425,7 @@ public class PFormulario extends JPanel {
         }
     }
 
-    // --- Ver pedidos ---
+    //Ver pedidos
     private void verPedidosCliente(Cliente c) {
         ArrayList<Reserva> reservas = controlador.getReservasCliente(c);
         if (reservas.isEmpty()) { msg("No tienes reservas"); return; }
@@ -461,7 +441,7 @@ public class PFormulario extends JPanel {
         mostrarScrollDialog("Mis pedidos", sb.toString());
     }
 
-    // --- Ver factura ---
+    // Ver factura
     private void verFacturaCliente(Cliente c) {
         ArrayList<Reserva> reservas = controlador.getReservasCliente(c);
         if (reservas.isEmpty()) { msg("No tienes reservas"); return; }
@@ -475,7 +455,7 @@ public class PFormulario extends JPanel {
         msg(factura != null ? factura.toString() : "Aún no se ha generado factura");
     }
 
-    // --- Ver menú ---
+    //Ver menu
     private void verMenuCafe() {
         ArrayList<Platillo> menu = controlador.getMenu();
         if (menu.isEmpty()) { msg("El menú está vacío"); return; }
@@ -484,7 +464,7 @@ public class PFormulario extends JPanel {
         mostrarScrollDialog("Menú", sb.toString());
     }
 
-    // --- Stock en tabla ---
+    //Stock en tabla
     private void mostrarStockTabla(String tipo) {
         HashMap<Juego, Integer> stock = tipo.equals("PRESTAMO")
                 ? controlador.getStockPrestamo() : controlador.getStockVenta();
@@ -498,7 +478,7 @@ public class PFormulario extends JPanel {
         mostrarTablaDialog("Catálogo de " + tipo.toLowerCase(), model);
     }
 
-    // --- Préstamo de juego ---
+    //Prestamo de juego
     private void prestamoJuego(Cliente c, Empleado emp) {
         ArrayList<Juego> juegos = controlador.getCatalogoPrestamo();
         if (juegos.isEmpty()) { msg("No hay juegos disponibles para préstamo"); return; }
@@ -523,7 +503,7 @@ public class PFormulario extends JPanel {
         msg(controlador.solicitarPrestamo(u, juego, reserva));
     }
 
-    // --- Guardar juego favorito ---
+    // Guardar juego favorito
     private void guardarJuegoFavorito(Usuario u) {
         ArrayList<Juego> catalogo = controlador.getCatalogoPrestamo();
         if (catalogo.isEmpty()) { msg("No hay juegos en el catálogo"); return; }
@@ -537,7 +517,7 @@ public class PFormulario extends JPanel {
         msg(juego.getNombre() + " añadido a favoritos");
     }
 
-    // --- Devolver préstamo ---
+    //Devolver préstamo
     private void devolverPrestamo(Usuario u) {
         ArrayList<Prestamo> prestamos = controlador.getPrestamosUsuario(u);
         if (prestamos.isEmpty()) { msg("No tienes préstamos activos"); return; }
@@ -551,7 +531,7 @@ public class PFormulario extends JPanel {
         msg(controlador.devolverPrestamo(id));
     }
 
-    // --- Ver juegos favoritos ---
+    //Ver juegos favoritos
     private void verJuegosFavoritos(Usuario u) {
         ArrayList<Juego> favs = controlador.getJuegosFavoritos(u);
         if (favs.isEmpty()) { msg("No tienes juegos favoritos"); return; }
@@ -560,7 +540,7 @@ public class PFormulario extends JPanel {
         mostrarScrollDialog("Juegos favoritos", sb.toString());
     }
 
-    // --- Inscribir torneo ---
+    // Inscribir torneo
     private void inscribirTorneo(Usuario u) {
         HashMap<String, Torneo> torneos = controlador.getTorneos();
         if (torneos.isEmpty()) { msg("No hay torneos disponibles"); return; }
@@ -578,7 +558,7 @@ public class PFormulario extends JPanel {
         }
     }
 
-    // --- Borrar inscripción torneo ---
+    //Borrar inscripción torneo
     private void borrarInscripcionTorneo(Usuario u) {
         HashMap<String, Torneo> torneos = controlador.getTorneos();
         if (torneos.isEmpty()) { msg("No hay torneos disponibles"); return; }
@@ -589,9 +569,7 @@ public class PFormulario extends JPanel {
         msg(controlador.eliminarDeTorneo(sel, u));
     }
 
-    // =========================================================
     // ACCIONES EMPLEADO
-    // =========================================================
 
     private void verTurnosEmpleado(Empleado e) {
         ArrayList<Turno> turnos = controlador.consultarTurnosEmpleado(e);
@@ -781,9 +759,7 @@ public class PFormulario extends JPanel {
         }
     }
 
-    // =========================================================
     // ACCIONES ADMINISTRADOR
-    // =========================================================
 
     private void crearMesero() {
         String login  = input("Login:"); if (login == null) return;
@@ -1083,9 +1059,7 @@ public class PFormulario extends JPanel {
         msg("Gráfica actualizada con: " + sel);
     }
 
-    // =========================================================
-    // HELPERS DE DIÁLOGOS
-    // =========================================================
+    // HELPERS DE DIALOGOS
     private void mostrarScrollDialog(String titulo, String contenido) {
         JTextArea area = new JTextArea(contenido);
         area.setEditable(false);

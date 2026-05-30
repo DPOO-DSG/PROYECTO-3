@@ -10,10 +10,7 @@ import excepciones.*;
 import logica.*;
 import persistencia.PersistenciaCafe;
 
-/**
- * Controlador MVC: único punto de contacto entre la vista (Swing) y la lógica (Cafe).
- * No contiene ningún componente gráfico; solo delega a Cafe y notifica a los observadores.
- */
+
 public class Controlador {
 
 	private Cafe cafe;
@@ -23,9 +20,7 @@ public class Controlador {
 		this.cafe = cafe;
 	}
 
-	// =========================================================
 	// OBSERVERS
-	// =========================================================
 	public void agregarObservador(IObserver obs) {
 		observadores.add(obs);
 	}
@@ -36,24 +31,17 @@ public class Controlador {
 		}
 	}
 
-	// =========================================================
 	// PERSISTENCIA
-	// =========================================================
 	public void guardar() {
 		PersistenciaCafe.guardar(cafe);
 	}
 
-	// =========================================================
-	// AUTH / LOGIN
-	// =========================================================
-	/** Retorna el objeto autenticado (Cliente, Empleado o Administrador) o null. */
+	// LOGIN
 	public Object login(String login, String password) {
 		return cafe.login(login, password);
 	}
 
-	// =========================================================
 	// CLIENTES
-	// =========================================================
 	public boolean registrarCliente(String login, String password) {
 		boolean ok = cafe.crearCliente(login, password, new ArrayList<>(), 0);
 		if (ok) notificar();
@@ -76,9 +64,7 @@ public class Controlador {
 		return cafe.getReservasActivasCliente(c);
 	}
 
-	// =========================================================
 	// EMPLEADOS
-	// =========================================================
 	public String crearMesero(String login, String password, String codigo, ArrayList<String> dias) {
 		try {
 			cafe.crearMesero(login, password, codigo, new ArrayList<>(), dias, new ArrayList<>());
@@ -111,9 +97,7 @@ public class Controlador {
 		return cafe.consultarTurnosEmpleado(e);
 	}
 
-	// =========================================================
 	// TURNOS Y CAMBIOS DE TURNO
-	// =========================================================
 	public HashMap<String, Turno> getTurnos() {
 		return cafe.getTurnos();
 	}
@@ -155,9 +139,7 @@ public class Controlador {
 		}
 	}
 
-	// =========================================================
-	// MENÚ / PLATILLOS
-	// =========================================================
+	//PLATILLOS
 	public ArrayList<Platillo> getMenu() {
 		return cafe.consultarMenu();
 	}
@@ -189,9 +171,7 @@ public class Controlador {
 		return ok;
 	}
 
-	// =========================================================
-	// INVENTARIO / JUEGOS
-	// =========================================================
+	//JUEGOS
 	public String crearJuego(String categoria, String nombre, int cantidad, int precio,
 			int anio, String empresa, int minJug, int maxJug,
 			String restriccion, boolean dificil, String tipoInventario) {
@@ -244,9 +224,7 @@ public class Controlador {
 		return "Juego no encontrado";
 	}
 
-	// =========================================================
-	// PRÉSTAMOS
-	// =========================================================
+	// PRESTAMOS
 	public String solicitarPrestamo(Usuario u, Juego juego, Reserva reserva) {
 		try {
 			u.solicitarPrestamo(cafe, juego, reserva);
@@ -291,9 +269,7 @@ public class Controlador {
 		return lista;
 	}
 
-	// =========================================================
 	// RESERVAS
-	// =========================================================
 	public String agendarReserva(Cliente c, int personas, boolean ninos, boolean jovenes, LocalDateTime fecha) {
 		try {
 			cafe.agendarReserva(c, personas, ninos, jovenes, fecha);
@@ -312,9 +288,7 @@ public class Controlador {
 		return cafe.getReservas();
 	}
 
-	// =========================================================
 	// PEDIDOS
-	// =========================================================
 	public String crearPedido(Reserva reserva, Empleado empleado,
 			ArrayList<Platillo> platillos, ArrayList<Juego> juegos) {
 		try {
@@ -328,9 +302,7 @@ public class Controlador {
 		}
 	}
 
-	// =========================================================
-	// FACTURAS / VENTAS
-	// =========================================================
+	// FACTURAS 
 	public String crearFactura(Cliente c, double propina, boolean usarPuntos,
 			boolean bonoTorneo, String codigo, Reserva r) {
 		try {
@@ -363,16 +335,12 @@ public class Controlador {
 		}
 	}
 
-	// =========================================================
 	// MESAS
-	// =========================================================
 	public HashMap<Integer, Mesa> getMesas() {
 		return cafe.getMesas();
 	}
 
-	// =========================================================
 	// TORNEOS
-	// =========================================================
 	public String crearTorneoAmistoso(String nombre, String nombreJuego, int participantes, String dia) {
 		try {
 			cafe.crearTorneoAmistoso(nombre, nombreJuego, participantes, dia);
@@ -435,9 +403,7 @@ public class Controlador {
 		return "Premio otorgado a: " + ganador.getLogin();
 	}
 
-	// =========================================================
-	// JUEGOS FAVORITOS / APRENDER JUEGO
-	// =========================================================
+	// JUEGOS FAVORITOS Y APRENDER JUEGO
 	public void guardarJuegoFavorito(Usuario u, Juego juego) {
 		u.getJuegosFavoritos().add(juego);
 	}
@@ -450,14 +416,8 @@ public class Controlador {
 		cafe.anadirJuegoAMesero(login, juego);
 	}
 
-	// =========================================================
 	// DATOS PARA GRÁFICAS (PLienzo)
-	// =========================================================
 
-	/**
-	 * Retorna distribución venta vs préstamo de un juego (para gráfica de pastel).
-	 * result[0] = copias inventario venta, result[1] = copias inventario préstamo
-	 */
 	public int[] getDistribucionJuego(String nombreJuego) {
 		int venta = 0, prestamo = 0;
 		for (HashMap.Entry<Juego, Integer> e : cafe.getInventarioVentas().getStock().entrySet()) {
@@ -473,10 +433,7 @@ public class Controlador {
 		return new int[]{venta, prestamo};
 	}
 
-	/**
-	 * Ventas por día en un rango de fechas (para gráfica de barras).
-	 * Retorna mapa: fecha (dd/MM) -> double[]{ventasCafeteria, ventasJuegos}
-	 */
+	
 	public HashMap<String, double[]> getVentasPorRango(LocalDateTime inicio, LocalDateTime fin) {
 	    HashMap<String, double[]> mapa = new HashMap<>();
 	    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM");
@@ -505,17 +462,14 @@ public class Controlador {
 	                }
 	            }
 	        } else {
-	            // Compra directa de empleado sin reserva → va a cafetería
+	            // Compra directa de empleado sin reserva 
 	            mapa.get(dia)[0] += cv.getTotal();
 	        }
 	    }
 	    return mapa;
 	}
 
-	/**
-	 * Reservas por día de la semana (para gráfica de líneas).
-	 * Retorna arreglo de 7 posiciones: lunes=0 ... domingo=6
-	 */
+	
 	public int[] getReservasPorSemana() {
 		int[] conteo = new int[7];
 		for (Reserva r : cafe.getReservas().values()) {
